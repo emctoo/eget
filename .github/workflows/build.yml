@@ -14,7 +14,7 @@ jobs:
       - name: check env
         run: |
           cat /etc/*release*
-          yum -y install make
+          yum -y install make gcc
           # yum -y update && yum -y upgrade && yum install -y wget
 
           # - name: install golang

@@ -34,3 +34,5 @@ jobs:
       - name: check go version
         run: |
           go version
+          make build
+          ls -al 

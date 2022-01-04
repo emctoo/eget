@@ -33,5 +33,4 @@ jobs:
 
       - name: check go version
         run: |
-          which go
           go version

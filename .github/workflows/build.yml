@@ -37,3 +37,13 @@ jobs:
           go version
           make build
           ls -al 
+
+      - name: Upload binaries to release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: eget
+          asset_name: eget.centos7.amd64
+          tag: ${{ github.ref }}
+          overwrite: true
+          body: "new centos7 build"

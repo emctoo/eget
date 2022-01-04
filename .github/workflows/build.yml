@@ -13,8 +13,9 @@ jobs:
     steps:
       - name: check env
         run: |
-          pwd
           cat /etc/*release*
+          yum -y update && yum -y upgrade
+          yum install -y golang
 
       - name: Checkout
         uses: actions/checkout@v2

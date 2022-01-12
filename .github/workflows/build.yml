@@ -32,7 +32,7 @@ jobs:
         with:
           go-version: ~1.17
 
-      - name: check go version
+      - name: check go version and build it
         run: |
           go version
           make build
@@ -44,6 +44,6 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: eget
           asset_name: eget
-          tag: eget.linux_amd64.centos7
+          tag: centos7
           overwrite: true
           body: "amd64 centos7 build"

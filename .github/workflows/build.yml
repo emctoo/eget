@@ -1,0 +1,49 @@
+name: building
+
+on:
+  push:
+    branches:
+      - actions
+
+jobs:
+  test:
+    name: check env
+    runs-on: ubuntu-20.04
+    container: centos:7
+    steps:
+      - name: check env
+        run: |
+          cat /etc/*release*
+          yum -y install make gcc
+          # yum -y update && yum -y upgrade && yum install -y wget
+
+          # - name: install golang
+          # run: |
+          # wget https://go.dev/dl/go1.17.5.linux-amd64.tar.gz
+          # rm -rf /usr/local/go && tar -C /usr/local -xzf go1.17.5.linux-amd64.tar.gz
+          # export PATH=$PATH:/usr/local/go/bin
+          # go version
+
+      - name: Checkout
+        uses: actions/checkout@v2
+          
+      - name: Setup Golang with cache
+        uses: magnetikonline/action-golang-cache@v1
+        with:
+          go-version: ~1.17
+
+      - name: check go version
+        run: |
+          go version
+          make build
+          ls -al 
+
+      - name: Upload binaries to release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: eget
+          asset_name: eget.centos7.amd64
+          tag: ${{ github.ref }}
+          overwrite: true
+          body: "new centos7 build"

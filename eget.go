@@ -254,7 +254,7 @@ func main() {
 	}
 
 	// get the url and candidates from the detector
-	url, candidates, err := detector.Detect(assets)
+	url, candidates, err := detector.Detect(assets, opts.ArchiveFilter)
 	if len(candidates) != 0 && err != nil {
 		// if multiple candidates are returned, the user must select manually which one to download
 		fmt.Printf("%v: please select manually\n", err)

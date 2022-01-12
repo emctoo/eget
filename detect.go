@@ -12,16 +12,16 @@ type Detector interface {
 	// Detect takes a list of possible assets and returns a direct match. If a
 	// single direct match is not found, it returns a list of candidates and an
 	// error explaining what happened.
-	Detect(assets []string) (string, []string, error)
+	Detect(assets []string, archiveFilter string) (string, []string, error)
 }
 
 type DetectorChain struct {
 	detectors []Detector
 }
 
-func (dc *DetectorChain) Detect(assets []string) (string, []string, error) {
+func (dc *DetectorChain) Detect(assets []string, archiveFilter string) (string, []string, error) {
 	for _, d := range dc.detectors {
-		choice, candidates, err := d.Detect(assets)
+		choice, candidates, err := d.Detect(assets, archiveFilter)
 		if len(candidates) == 0 && err != nil {
 			return "", nil, err
 		} else if len(candidates) == 0 {
@@ -156,7 +156,7 @@ var goarchmap = map[string]Arch{
 // candidates.
 type AllDetector struct{}
 
-func (a *AllDetector) Detect(assets []string) (string, []string, error) {
+func (a *AllDetector) Detect(assets []string, archiveFilter string) (string, []string, error) {
 	if len(assets) == 1 {
 		return assets[0], nil, nil
 	}
@@ -168,7 +168,7 @@ type SingleAssetDetector struct {
 	Asset string
 }
 
-func (s *SingleAssetDetector) Detect(assets []string) (string, []string, error) {
+func (s *SingleAssetDetector) Detect(assets []string, archiveFilter string) (string, []string, error) {
 	var candidates []string
 	for _, a := range assets {
 		if path.Base(a) == s.Asset {
@@ -215,7 +215,7 @@ func NewSystemDetector(sos, sarch string) (*SystemDetector, error) {
 // match the OS are found, and no full OS/Arch matches are found, the OS
 // matches are returned as candidates. Otherwise all assets are returned as
 // candidates.
-func (d *SystemDetector) Detect(assets []string) (string, []string, error) {
+func (d *SystemDetector) Detect(assets []string, archiveFilter string) (string, []string, error) {
 	var priority []string
 	var matches []string
 	var candidates []string
@@ -232,7 +232,9 @@ func (d *SystemDetector) Detect(assets []string) (string, []string, error) {
 		}
 		arch := d.Arch.Match(a)
 		if os && arch {
-			matches = append(matches, a)
+			if archiveFilter == "" || regexp.MustCompile(archiveFilter).MatchString(a) {
+				matches = append(matches, a)
+			}
 		}
 		if os {
 			candidates = append(candidates, a)

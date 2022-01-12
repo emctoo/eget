@@ -43,7 +43,7 @@ jobs:
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: eget
-          asset_name: eget.linux_amd64.centos7
+          asset_name: eget
           tag: eget.linux_amd64.centos7
           overwrite: true
           body: "amd64 centos7 build"
